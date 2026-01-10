@@ -1,4 +1,4 @@
-package com.ytmusicclone.ui
+package com.ytmusicclone.composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.AnchoredDraggableState
@@ -20,7 +20,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -34,14 +33,16 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.ytmusicclone.utility.android.AndroidNetwork
 import com.ytmusicclone.utility.ui.DragAnchors
 import kotlinx.coroutines.launch
 
 @Composable
 fun NoConnectionDialog(
     modifier: Modifier = Modifier,
-    anchoredDraggableState: AnchoredDraggableState<DragAnchors>
+    anchoredDraggableState: AnchoredDraggableState<DragAnchors>,
+    showDialog: Boolean,
+    closeDialog: () -> Unit,
+    goToDownloads: () -> Unit = {}
 ) {
     val maxHeight = LocalConfiguration.current.screenHeightDp.dp
     val density = LocalDensity.current
@@ -61,13 +62,18 @@ fun NoConnectionDialog(
     val alpha by remember {
         derivedStateOf { 1 - (swipeState.requireOffset() / (xOffset + 50f)) }
     }
-    val networkIsAvailable by AndroidNetwork.networkStatus.collectAsState()
     val scope = rememberCoroutineScope()
-    LaunchedEffect(networkIsAvailable) {
-        swipeState.snapTo(DragAnchors.LEFT)
+    LaunchedEffect(showDialog) {
+        if(showDialog){
+            swipeState.snapTo(DragAnchors.LEFT)
+        }
+    }
+    LaunchedEffect(swipeState.currentValue) {
+        if(swipeState.currentValue == DragAnchors.RIGHT)
+            closeDialog()
     }
 
-    if(!networkIsAvailable){
+    if(showDialog){
         Column(
             modifier
                 .graphicsLayer(
@@ -102,12 +108,17 @@ fun NoConnectionDialog(
                 TextButton(onClick = {
                     scope.launch{
                         swipeState.animateTo(DragAnchors.RIGHT)
+                    }.invokeOnCompletion {
+                        closeDialog()
                     }
                 }) {
                     Text("Dismiss", color = Color.White, fontSize = 16.sp)
                 }
                 Button(
-                    onClick = {},
+                    onClick = {
+                        closeDialog()
+                        goToDownloads()
+                    },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.White),
                     contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
                 ) {

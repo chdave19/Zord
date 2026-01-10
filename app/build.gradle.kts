@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("org.jetbrains.kotlin.plugin.serialization") version "2.3.0"
+    id("com.google.dagger.hilt.android")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -89,8 +91,26 @@ dependencies {
     //Immutable Collections for Kotlin
     implementation(libs.kotlinx.collections.immutable)
 
+    //Dagger Hilt
+    implementation("com.google.dagger:hilt-android:2.57.1")
+    ksp("com.google.dagger:hilt-android-compiler:2.57.1")
+
+    //Nav3 ViewModel Lifecycle
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+
+    //Hilt Lifecycle ViewModel
+    implementation(libs.androidx.hilt.lifecycle.viewmodel.compose)
+
+    //Room Database
+    implementation(libs.androidx.room.runtime)
+    ksp("androidx.room:room-compiler:2.8.4")
+    //Kotlin Extensions and Coroutines support for Room
+    implementation("androidx.room:room-ktx:2.8.4")
+
+
+
+
 
 //    //Bootstrap Icons
 //    implementation("com.composables:icons-bootstrap-outline-android:2.2.1")
-
 }

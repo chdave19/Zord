@@ -16,13 +16,16 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import com.ytmusicclone.ui.NoConnectionDialog
-import com.ytmusicclone.utility.ui.BottomMiniPlayer
+import com.ytmusicclone.composables.BottomMiniPlayer
+import com.ytmusicclone.composables.MiniPlayerMusicProgressBar
+import com.ytmusicclone.composables.NoConnectionDialog
 import com.ytmusicclone.utility.ui.DragAnchors
-import com.ytmusicclone.utility.ui.MiniPlayerMusicProgressBar
 
 @Composable
-fun BoxScope.BottomBarControls() {
+fun BoxScope.BottomBarControls(
+    showNoInternetDialog: Boolean,
+    closeNoInternetDialog: () -> Unit
+) {
     val density = LocalDensity.current
     val maxHeight =
         LocalConfiguration.current.screenHeightDp.dp
@@ -43,7 +46,7 @@ fun BoxScope.BottomBarControls() {
     val showMusicProgressBar by remember { derivedStateOf { anchoredDraggableState.requireOffset() >= requiredTravelDistance } }
 
     BottomMiniPlayer(anchoredDraggableState = anchoredDraggableState)
-    NoConnectionDialog(Modifier.align(Alignment.BottomEnd), anchoredDraggableState)
+    NoConnectionDialog(Modifier.align(Alignment.BottomEnd), anchoredDraggableState, showNoInternetDialog, closeNoInternetDialog)
     Column(
         modifier = Modifier
             .graphicsLayer(

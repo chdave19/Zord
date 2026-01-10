@@ -1,4 +1,4 @@
-package com.ytmusicclone.ui
+package com.ytmusicclone.composables
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -19,9 +19,9 @@ import com.ytmusicclone.navigation.AppNavigation
 import com.ytmusicclone.navigation.Destinations
 
 @Composable
-fun FastImage(modifier: Modifier = Modifier, imageUri: String) {
+fun FastImage(modifier: Modifier = Modifier, imageUri: String?) {
     Box(modifier.clickable {
-        AppNavigation.topBackStack.add(Destinations.ViewImageScreen(imageUri))
+        AppNavigation.topBackStack.add(Destinations.ViewImageScreen(imageUri?:""))
     }) {
         AsyncImage(
             modifier = Modifier

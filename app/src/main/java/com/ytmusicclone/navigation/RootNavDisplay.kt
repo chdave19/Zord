@@ -5,42 +5,25 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
-import coil3.compose.AsyncImage
-import coil3.request.ImageRequest
-import com.ytmusicclone.screens.ExploreScreen
-import com.ytmusicclone.screens.HomeScreen
-import com.ytmusicclone.screens.LibraryScreen
-import com.ytmusicclone.screens.SamplesScreen
+import com.ytmusicclone.screens.MainScreen
+import com.ytmusicclone.screens.ViewImageScreen
+import com.ytmusicclone.viewmodels.MainScreenViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RootNavDisplay() {
     NavDisplay(
+        entryDecorators = listOf(
+            rememberSaveableStateHolderNavEntryDecorator(),
+            rememberViewModelStoreNavEntryDecorator()
+        ),
         backStack = AppNavigation.topBackStack,
         onBack = { AppNavigation.topBackStack.removeLastOrNull() },
         transitionSpec = {
@@ -50,101 +33,17 @@ fun RootNavDisplay() {
             slideInHorizontally(tween(500)) { -it } togetherWith slideOutHorizontally(tween(500)) { -it }
         },
         entryProvider = entryProvider {
-            entry<Destinations.ViewImageScreen> { imageDetails ->
-                Scaffold(
-                    topBar = {
-                        TopAppBar(
-                            colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Black),
-                            title = {},
-                            navigationIcon = {
-                                IconButton(onClick = {
-                                    AppNavigation.topBackStack.removeLastOrNull()
-
-                                }) {
-                                    Icon(
-                                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                        contentDescription = "Go back",
-                                        tint = Color.White
-                                    )
-                                }
-                            }
-                        )
-                    }
-                ) {
-                    Box(
-                        Modifier
-                            .padding(
-                                top = it.calculateTopPadding(),
-                                bottom = it.calculateBottomPadding()
-                            )
-                            .fillMaxSize()
-                            .background(Color.Black), contentAlignment = Alignment.Center
-                    ) {
-                        Box(
-                            Modifier
-                                .height(300.dp)
-                                .fillMaxWidth()
-                        ) {
-                            AsyncImage(
-                                modifier = Modifier.fillMaxSize(),
-                                model = ImageRequest.Builder(LocalContext.current)
-                                    .data(imageDetails.url)
-                                    .build(),
-                                contentDescription = null,
-                                contentScale = ContentScale.Crop,
-                            )
-                        }
-                    }
-                }
+            entry<Destinations.ViewImageScreen> { key ->
+                ViewImageScreen(key.url)
             }
             entry<Destinations.MainScreen>(
-
             ) {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    Scaffold(
-                        topBar = {
-                            TopLevelAppBar()
-                        },
-                        snackbarHost = {
-                            SnackbarHost(AppNavigation.snackbarState)
-                        },
-                        containerColor = MaterialTheme.colorScheme.primary
-                    ) { mainPaddingValues ->
-                        NavDisplay(
-                            onBack = { AppNavigation.navigator.goBack() },
-                            entries = AppNavigation.navigationState.toEntries(
-                                entryProvider = entryProvider {
-                                    entry<Destinations.Home> {
-                                        HomeScreen(
-                                            Modifier.padding(
-                                                top = mainPaddingValues.calculateTopPadding(),
-                                                bottom = 112.dp
-                                            )
-                                        )
-                                    }
-                                    entry<Destinations.Samples> {
-                                        SamplesScreen(
-                                            Modifier
-                                                .fillMaxSize()
-                                                .background(Color.Blue)
-                                                .padding(
-                                                    top = mainPaddingValues.calculateTopPadding(),
-                                                    bottom = 112.dp
-                                                )
-                                        )
-                                    }
-                                    entry<Destinations.Explore> {
-                                        ExploreScreen()
-                                    }
-                                    entry<Destinations.Library> {
-                                        LibraryScreen()
-                                    }
-                                }
-                            )
-                        )
+                val viewModel = hiltViewModel<MainScreenViewModel, MainScreenViewModel.Factory>(
+                    creationCallback = { factory ->
+                        factory.create(Destinations.MainScreen)
                     }
-                    BottomBarControls()
-                }
+                )
+                MainScreen(viewModel = viewModel)
             }
         }
     )

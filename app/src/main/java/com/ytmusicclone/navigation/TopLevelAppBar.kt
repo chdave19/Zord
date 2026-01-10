@@ -33,7 +33,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.ytmusicclone.R
-import com.ytmusicclone.utility.ui.ProfilePhoto
+import com.ytmusicclone.composables.ProfilePhoto
+
 
 @Composable
 fun TopLevelAppBar() {

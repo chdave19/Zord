@@ -13,9 +13,9 @@ data class MusicEntity @OptIn(ExperimentalUuidApi::class) constructor(
     val id: String = Uuid.random().toString()
 )
 
-fun MusicEntity.toDomain() = Music(
-    songName,
-    singerName,
-    albumUri,
-    id
-)
+//fun MusicEntity.toDomain() = Music(
+//    songName,
+//    singerName,
+//    albumUri,
+//    id
+//)

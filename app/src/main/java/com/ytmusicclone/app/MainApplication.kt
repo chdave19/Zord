@@ -3,21 +3,13 @@ package com.ytmusicclone.app
 import android.app.Application
 import android.os.Process
 import android.util.Log
-import com.ytmusicclone.utility.android.AndroidNetwork
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
+import dagger.hilt.android.HiltAndroidApp
 import kotlin.system.exitProcess
 
+@HiltAndroidApp
 class MainApplication : Application() {
     override fun onCreate() {
         super.onCreate()
-        CoroutineScope(SupervisorJob() + Dispatchers.Default).launch {
-            AndroidNetwork.observeNetworkConnectivityStatus(applicationContext).collect {
-                Log.d("dcm33e3ds", it.toString())
-            }
-        }
         // This is where you plant the "listener" for crashes
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
             // 1. Log it so you can see it in Logcat

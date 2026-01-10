@@ -1,44 +1,51 @@
 package com.ytmusicclone.data.network.ktorclient.client
 
-import com.ytmusicclone.data.model.MusicDto
+import com.ytmusicclone.data.model.TrackDto
 import com.ytmusicclone.data.network.RemoteDiscoveryData
-import com.ytmusicclone.data.network.ktorclient.KtorClientProvider
 import io.ktor.client.HttpClient
-import io.ktor.client.plugins.expectSuccess
-import io.ktor.client.request.get
-import io.ktor.client.statement.bodyAsText
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlin.time.Duration.Companion.seconds
 
-suspend fun main(){
-    val client = KtorClientProvider.client
-    val response = client.get("https://www.google.com"){
-        expectSuccess = true
+fun main() = runBlocking<Unit> {
+    val scope1 = launch(Dispatchers.Default){
+        for(i in 0..10)
+            delay(1.seconds)
     }
-    println(response.bodyAsText())
+    val scope2 = launch(Dispatchers.Default){
+        while(scope1.isActive){
+            println("is active")
+        }
+    }
+    delay(5.seconds)
+    scope1.cancel()
 }
 
 class KtorRemoteDiscoveryDataSource(private val httpClient: HttpClient) : RemoteDiscoveryData {
 
-    override suspend fun getCoversAndRemixes(): List<MusicDto> {
+    override suspend fun getCoversAndRemixes(): List<TrackDto> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getYourDailyDiscover(): List<MusicDto> {
+    override suspend fun getYourDailyDiscover(): List<TrackDto> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getLongListen(): List<MusicDto> {
+    override suspend fun getLongListen(): List<TrackDto> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getMusicVideoForYou(): List<MusicDto> {
+    override suspend fun getMusicVideoForYou(): List<TrackDto> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getAlbumsForYou(): List<MusicDto> {
+    override suspend fun getAlbumsForYou(): List<TrackDto> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getNewReleases(): List<MusicDto> {
+    override suspend fun getNewReleases(): List<TrackDto> {
         TODO("Not yet implemented")
     }
 }

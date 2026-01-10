@@ -1,20 +1,21 @@
 package com.ytmusicclone.data.network
 
-import com.ytmusicclone.data.model.MusicDto
+import com.ytmusicclone.data.model.TrackDto
+
 
 interface RemoteDiscoveryData{
-    suspend fun getCoversAndRemixes(): List<MusicDto>
-    suspend fun getYourDailyDiscover(): List<MusicDto>
-    suspend fun getLongListen(): List<MusicDto>
-    suspend fun getMusicVideoForYou(): List<MusicDto>
-    suspend fun getAlbumsForYou(): List<MusicDto>
-    suspend fun getNewReleases(): List<MusicDto>
+    suspend fun getCoversAndRemixes(): List<TrackDto>
+    suspend fun getYourDailyDiscover(): List<TrackDto>
+    suspend fun getLongListen(): List<TrackDto>
+    suspend fun getMusicVideoForYou(): List<TrackDto>
+    suspend fun getAlbumsForYou(): List<TrackDto>
+    suspend fun getNewReleases(): List<TrackDto>
 }
 
 interface RemotePersonalisationData{
-    suspend fun getSpeedDial(): List<MusicDto>
-    suspend fun getMixedForYou(): List<MusicDto>
-    suspend fun getForgottenFavourites(): List<MusicDto>
-    suspend fun getQuickPicks(): List<MusicDto>
-    suspend fun getFromYourLibrary(): List<MusicDto>
+    suspend fun getSpeedDial(trackId: Int?): TrackDto?
+    suspend fun getMixedForYou(): List<TrackDto>
+    suspend fun getForgottenFavourites(): List<TrackDto>
+    suspend fun getQuickPicks(): List<TrackDto>
+    suspend fun getFromYourLibrary(): List<TrackDto>
 }

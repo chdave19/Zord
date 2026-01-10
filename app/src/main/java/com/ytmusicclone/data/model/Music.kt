@@ -6,9 +6,12 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @Immutable
-data class Music @OptIn(ExperimentalUuidApi::class) constructor(
-    val songName: String,
-    val singerName: String,
-    val albumUri: String,
-    val id: String = Uuid.random().toString()
+data class Track (
+    val trackName: String = "",
+    val artistName: String? = null,
+    val trackCover: String? = null,
+    val trackCoverBig: String? = null,
+    val trackCoverXl: String? = null,
+    val releaseDate: String? = null,
+    val trackId: Int = 0,
 )
